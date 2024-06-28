@@ -1,0 +1,78 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+class Book {
+public:
+    string id, title, author;
+    bool isBorrowed;
+
+    Book(string i, string t, string a, bool b = false) : id(i), title(t), author(a), isBorrowed(b) {}
+};
+
+class Library {
+    vector<Book> books;
+public:
+    void addBook(Book book) {
+        books.push_back(book);
+    }
+
+    void deleteBook(string id) {
+        books.erase(remove_if(books.begin(), books.end(), [&](Book &book) { return book.id == id; }), books.end());
+    }
+
+    void searchBook(string title) {
+        for (Book &book : books) {
+            if (book.title == title) {
+                cout << "Found: " << book.title << " by " << book.author << endl;
+                return;
+            }
+        }
+        cout << "Book not found" << endl;
+    }
+
+    void borrowBook(string id) {
+        for (Book &book : books) {
+            if (book.id == id) {
+                if (book.isBorrowed) {
+                    cout << "Book already borrowed" << endl;
+                } else {
+                    book.isBorrowed = true;
+                    cout << "Book borrowed" << endl;
+                }
+                return;
+            }
+        }
+        cout << "Book not found" << endl;
+    }
+
+    void returnBook(string id) {
+        for (Book &book : books) {
+            if (book.id == id) {
+                if (book.isBorrowed) {
+                    book.isBorrowed = false;
+                    cout << "Book returned" << endl;
+                } else {
+                    cout << "Book was not borrowed" << endl;
+                }
+                return;
+            }
+        }
+        cout << "Book not found" << endl;
+    }
+};
+
+int main() {
+    Library lib;
+    lib.addBook(Book("1", "The Great Gatsby", "F. Scott Fitzgerald"));
+    lib.addBook(Book("2", "1984", "George Orwell"));
+    
+    lib.searchBook("1984");
+    lib.borrowBook("2");
+    lib.returnBook("2");
+    lib.deleteBook("1");
+
+    return 0;
+}
